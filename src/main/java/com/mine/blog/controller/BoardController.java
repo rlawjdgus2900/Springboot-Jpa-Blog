@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class BoardController {
 
-
     @GetMapping("/blog")
     public String index(@AuthenticationPrincipal PrincipalDetail principalDetail) {
         if (principalDetail != null) {
@@ -20,4 +19,8 @@ public class BoardController {
         return "index";
     }
 
+    @GetMapping({"", "/"})
+    public String rootRedirect() {
+        return "redirect:/blog";
+    }
 }

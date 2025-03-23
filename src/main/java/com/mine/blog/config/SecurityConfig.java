@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/loginForm")
                         .loginProcessingUrl("/auth/loginProc")
-                        .defaultSuccessUrl("/blog")
+                        .defaultSuccessUrl("/")
                 );
 
         return http.build();
