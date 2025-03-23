@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -17,11 +18,6 @@ public class PrincipalDetail implements UserDetails {
         this.user = user;
     }
 
-    // 권한 리턴
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("ROLE_" + user.getRole().toString()));
-    }
 
     @Override
     public String getPassword() {
@@ -57,4 +53,12 @@ public class PrincipalDetail implements UserDetails {
     public User getUser() {
         return user;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Collection<GrantedAuthority> collectors = new ArrayList<>();
+        collectors.add(()->{return "ROLE_"+user.getRole();});
+        return collectors;
+    }
+
 }

@@ -1,7 +1,11 @@
 package com.mine.blog.config;
 
+import com.mine.blog.config.auth.PrincipalDetailService;
+import jakarta.servlet.DispatcherType;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -9,31 +13,41 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration // IoC 등록
 public class SecurityConfig {
 
+    private final PrincipalDetailService principalDetailService;
+
+    public SecurityConfig(PrincipalDetailService principalDetailService) {
+        this.principalDetailService = principalDetailService;
+    }
+
     // 🔐 비밀번호 암호화 (BCrypt 사용)
     @Bean
-    BCryptPasswordEncoder encode() {
+    public BCryptPasswordEncoder encode() {
         return new BCryptPasswordEncoder();
+    }
+
+    // 📌 AuthenticationManager 빈 등록 (필수!)
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     // 🔐 보안 필터 체인 설정
     @Bean
-    SecurityFilterChain configure(HttpSecurity http) throws Exception {
+    public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) //csrf 비활성화
-                // 📌 경로별 접근 권한 설정
+                .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (테스트용)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**","/js/**","/css/**","/image/**", "/", "/blog").permitAll()      // 로그인, 회원가입만 허용
-                        .requestMatchers("/admin/**").hasRole("ADMIN") // 관리자만 접근
-                        .anyRequest().permitAll()                // 나머지 → 로그인 필요
+                        .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
+                        .requestMatchers("/auth/**", "/", "/blog", "/error","/js/**", "/css/**", "/image/**").permitAll()
+                        .anyRequest().authenticated()
                 )
-
-                // 📌 로그인 폼 설정
                 .formLogin(form -> form
-                        .loginPage("/auth/loginForm")// 커스텀 로그인 페이지 URL
-                        .loginProcessingUrl("/login") // 로그인 처리 URL 명시
-                        .defaultSuccessUrl("/")   // 로그인 성공 시 이동할 URL
+                        .loginPage("/auth/loginForm")
+                        .loginProcessingUrl("/auth/loginProc")
+                        .defaultSuccessUrl("/")
                 );
 
-        return http.build(); // 설정 완료 후 반환
+        return http.build();
     }
 }
