@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // CSRF 비활성화 (테스트용)
                 .authorizeHttpRequests(auth -> auth
                         .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                        .requestMatchers("/auth/**", "/", "/blog", "/error","/js/**", "/css/**", "/image/**").permitAll()
+                        .requestMatchers("/auth/**", "/", "/error","/js/**", "/css/**", "/image/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

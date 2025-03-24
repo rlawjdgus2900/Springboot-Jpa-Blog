@@ -28,7 +28,7 @@ public class Board {
     @Lob // 대용량 데이터
     private String content; // 썸머노트 라이브러리
 
-    @ColumnDefault("0")
+
     private int views;
 
     @ManyToOne // Many = Board, User = One

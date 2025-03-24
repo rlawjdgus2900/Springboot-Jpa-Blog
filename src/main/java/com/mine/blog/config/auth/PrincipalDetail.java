@@ -1,6 +1,7 @@
 package com.mine.blog.config.auth;
 
 import com.mine.blog.model.User;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 // 시큐리티가 로그인 요청을 가로채서 로그인을 진행하고 완료되면 UserDetails 타입의 객체를 Security의 고유 세션에 저장함
+@Getter
 public class PrincipalDetail implements UserDetails {
 
     private final User user; // 컴포지션
