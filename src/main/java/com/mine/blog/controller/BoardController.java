@@ -19,31 +19,39 @@ public class BoardController {
     @Autowired
     private BoardService boardService;
 
-    @GetMapping("/blog")
-    public String index(@AuthenticationPrincipal PrincipalDetail principalDetail) {
-        if (principalDetail != null) {
-            System.out.println("로그인 사용자 아이디 : " + principalDetail.getUsername());
+    @GetMapping({"", "/"})
+    public String index(
+            @AuthenticationPrincipal PrincipalDetail principal,
+            Model model,
+            @PageableDefault(size = 3, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        if (principal != null) {
+            System.out.println("현재 로그인 유저: " + principal.getUsername());
         } else {
-            System.out.println("로그인 안 됨");
+            System.out.println("현재 로그인 유저 없음");
         }
+
+        model.addAttribute("boards", boardService.글목록(pageable));
+
         return "index";
     }
 
-    @GetMapping({"", "/"})
-    public String index(Model model, @PageableDefault(size = 3,sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute("boards", boardService.글목록(pageable));
-        return "index";
-    }
 
     @GetMapping("/board/{id}")
-    public String findById(@PathVariable int id,Model model){
+    public String findById(@PathVariable int id,Model model,@AuthenticationPrincipal PrincipalDetail principalDetail){
         model.addAttribute("board", boardService.글상세보기(id));
+        model.addAttribute("principal", principalDetail);
         return "board/detail";
     }
 
+    @GetMapping("/board/{id}/updateForm")
+    public String updateForm(@PathVariable int id,Model model){
+        model.addAttribute("board", boardService.글상세보기(id));
+        return "board/updateForm";
+    }
 
     @GetMapping("/board/saveForm")
-    public String saveForm() {
+    public String saveForm(@AuthenticationPrincipal PrincipalDetail principal) {
         return "board/saveForm";
     }
 

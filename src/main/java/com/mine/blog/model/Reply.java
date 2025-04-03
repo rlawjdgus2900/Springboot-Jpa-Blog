@@ -1,5 +1,6 @@
 package com.mine.blog.model;
 
+import com.mine.blog.dto.ReplySaveRequestDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

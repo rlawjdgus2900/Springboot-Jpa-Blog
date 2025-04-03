@@ -8,6 +8,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class PrincipalDetailService implements UserDetailsService {
 
@@ -17,10 +19,16 @@ public class PrincipalDetailService implements UserDetailsService {
     // 시큐리티 세션 = Authentication = UserDetails
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User userEntity = userRepository.findByUsername(username);
-        if (userEntity == null) {
-            throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + username);
-        }
-        return new PrincipalDetail(userEntity); // 시큐리티 세션에 저장됨
+        System.out.println("🔍 loadUserByUsername 호출됨: " + username);
+
+        User userEntity = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다."));
+
+        System.out.println("🔐 DB에서 불러온 유저: " + userEntity.getUsername());
+        System.out.println("🔐 비밀번호: " + userEntity.getPassword());
+
+        return new PrincipalDetail(userEntity); // 여기서 비번이 잘 들어간 상태여야 함
     }
+
+
 }

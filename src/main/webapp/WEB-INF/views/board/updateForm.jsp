@@ -4,17 +4,17 @@
 <%@include file="../layout/header.jsp"%>
 
 <div class="container">
+    <input type="hidden"id="id"value="${board.id}"/>
         <div class="form-group">
-            <label for="title">제목:</label>
-            <input type="text"  class="form-control" placeholder="제목을 입력해주세요." id="title">
+            <input value="${board.title}" type="text"  class="form-control" placeholder="제목을 입력해주세요." id="title">
         </div>
 
         <div class="form-group">
-            <label for="content">내용:</label>
-            <textarea class="form-control summernote" rows="5" id="content"></textarea>
+            <textarea class="form-control summernote" rows="5" id="content">${board.content}</textarea>
         </div>
 
-        <button id="btn-save" class="btn btn-primary">글등록</button>
+        <button id="btn-update" class="btn btn-primary">글수정</button>
+    </form>
 </div>
 
 <script>

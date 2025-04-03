@@ -1,11 +1,11 @@
 package com.mine.blog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.sql.Timestamp;
@@ -35,8 +35,10 @@ public class Board {
     @JoinColumn(name="userId", nullable = false)
     private User user; // DB 는 오브젝트 저장 X. 자바는 오브젝트 저장 O
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER) // mappedBy = 연관관계주인 X Not FK / DB에 칼럼 만들지 X
-    private List<Reply> reply;
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)// mappedBy = 연관관계주인 X Not FK / DB에 칼럼 만들지 X
+    @JsonIgnoreProperties({"board"})
+    @OrderBy("id desc")
+    private List<Reply> replys;
 
     @CreationTimestamp
     private Timestamp createDate;

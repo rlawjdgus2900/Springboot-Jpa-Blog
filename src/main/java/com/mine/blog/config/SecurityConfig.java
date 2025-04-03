@@ -25,7 +25,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 📌 AuthenticationManager 빈 등록 (필수!)
+    // 📌 AuthenticationManager 빈 등록
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration config) throws Exception {
